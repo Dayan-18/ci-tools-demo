@@ -1,0 +1,24 @@
+# Same pipeline, GitLab CI syntax.
+# Runs automatically if this repo is mirrored to GitLab.
+
+stages:
+  - test
+
+.test_template: &test_template
+  stage: test
+  before_script:
+    - pip install -r requirements.txt
+  script:
+    - pytest test_calculator.py -v --junitxml=report.xml
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
+
+test:python3.11:
+  <<: *test_template
+  image: python:3.11
+
+test:python3.12:
+  <<: *test_template
+  image: python:3.12
